@@ -53,16 +53,12 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
-    public async Task GetQuote_WhenWeatherServiceThrows_ReturnsProblem()
+    public async Task GetQuote_WhenWeatherServiceThrows_ReturnsBadRequest()
     {
         var client = BuildClient(weather: new ThrowingWeatherService());
         var response = await client.GetAsync("/api/quote?location=Nowhere");
 
-        Assert.True(
-            response.StatusCode is HttpStatusCode.BadRequest or
-            HttpStatusCode.InternalServerError or
-            HttpStatusCode.NotFound,
-            $"Expected an error status but got {response.StatusCode}");
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

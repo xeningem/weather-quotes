@@ -12,14 +12,16 @@ public static class QuoteEndpoints
             IWeatherService weatherService,
             IQuoteSearchService quoteSearchService) =>
         {
-            var weather = await weatherService.GetCurrentWeatherAsync(location);
-            var quotes = await quoteSearchService.SearchAsync(weather.ToNaturalLanguage(), weather.TemperatureCelsius, weather.Condition);
-
-            return Results.Ok(new
+            try
             {
-                weather,
-                quotes
-            });
+                var weather = await weatherService.GetCurrentWeatherAsync(location);
+                var quotes = await quoteSearchService.SearchAsync(weather.ToNaturalLanguage(), weather.TemperatureCelsius, weather.Condition);
+                return Results.Ok(new { weather, quotes });
+            }
+            catch (ArgumentException ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
         })
         .WithName("GetQuote");
     }

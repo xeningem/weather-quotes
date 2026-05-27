@@ -33,7 +33,6 @@ public static class BookDownloader
         (3407,  "Jack London",             "The Sea Wolf"),
         (4667,  "Jack London",             "The People of the Abyss"),
         (1798,  "Anton Chekhov",           "The Cherry Orchard"),
-        (2738,  "Anton Chekhov",           "Ward Number Six"),
         // Batch 2 — weather-rich additions
         (1723,  "Joseph Conrad",           "Typhoon"),
         (220,   "Joseph Conrad",           "The Secret Sharer"),

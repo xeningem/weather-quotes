@@ -77,6 +77,19 @@ public static class GutenbergLoader
         { "Jack London - The People of the Abyss", new BookMetadata("Early 20th century", "non-fiction", "en") },
         { "Anton Chekhov - The Cherry Orchard", new BookMetadata("Early 20th century", "play", "en") },
         { "Anton Chekhov - Ward Number Six", new BookMetadata("Late 19th century", "short story", "en") },
+        // Batch 2
+        { "Joseph Conrad - Typhoon", new BookMetadata("Edwardian", "novella", "en") },
+        { "Joseph Conrad - The Secret Sharer", new BookMetadata("Edwardian", "short story", "en") },
+        { "Thomas Hardy - The Mayor of Casterbridge", new BookMetadata("Victorian", "novel", "en") },
+        { "Thomas Hardy - The Woodlanders", new BookMetadata("Victorian", "novel", "en") },
+        { "Jack London - Burning Daylight", new BookMetadata("Early 20th century", "novel", "en") },
+        { "Jack London - Martin Eden", new BookMetadata("Early 20th century", "novel", "en") },
+        { "Anton Chekhov - Uncle Vanya", new BookMetadata("Late 19th century", "play", "en") },
+        { "Anton Chekhov - Three Sisters", new BookMetadata("Early 20th century", "play", "en") },
+        { "George Eliot - Middlemarch", new BookMetadata("Victorian", "novel", "en") },
+        { "George Eliot - The Mill on the Floss", new BookMetadata("Victorian", "novel", "en") },
+        { "D.H. Lawrence - Sons and Lovers", new BookMetadata("Early 20th century", "novel", "en") },
+        { "D.H. Lawrence - Women in Love", new BookMetadata("Early 20th century", "novel", "en") },
     };
 
     public static List<LiteraryQuote> LoadBooks(string booksDirectory)

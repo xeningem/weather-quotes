@@ -34,6 +34,19 @@ public static class BookDownloader
         (4667,  "Jack London",             "The People of the Abyss"),
         (1798,  "Anton Chekhov",           "The Cherry Orchard"),
         (2738,  "Anton Chekhov",           "Ward Number Six"),
+        // Batch 2 — weather-rich additions
+        (1723,  "Joseph Conrad",           "Typhoon"),
+        (220,   "Joseph Conrad",           "The Secret Sharer"),
+        (143,   "Thomas Hardy",            "The Mayor of Casterbridge"),
+        (1582,  "Thomas Hardy",            "The Woodlanders"),
+        (3004,  "Jack London",             "Burning Daylight"),
+        (1056,  "Jack London",             "Martin Eden"),
+        (1924,  "Anton Chekhov",           "Uncle Vanya"),
+        (1920,  "Anton Chekhov",           "Three Sisters"),
+        (145,   "George Eliot",            "Middlemarch"),
+        (6688,  "George Eliot",            "The Mill on the Floss"),
+        (217,   "D.H. Lawrence",           "Sons and Lovers"),
+        (4240,  "D.H. Lawrence",           "Women in Love"),
     ];
 
 

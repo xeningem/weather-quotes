@@ -7,7 +7,7 @@ using WeatherQuotes.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient<WeatherService>();
+builder.Services.AddHttpClient<IWeatherService, WeatherService>();
 
 var ollamaClient = new OpenAIClient(
     new ApiKeyCredential("ollama"),
@@ -17,7 +17,7 @@ var ollamaClient = new OpenAIClient(
 builder.Services.AddOpenAIEmbeddingGenerator("nomic-embed-text", ollamaClient);
 builder.Services.AddSingleton<EmbeddingService>();
 builder.Services.AddSingleton(_ => new QdrantClient("localhost"));
-builder.Services.AddSingleton<QuoteSearchService>();
+builder.Services.AddSingleton<IQuoteSearchService, QuoteSearchService>();
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
@@ -29,3 +29,5 @@ app.UseStaticFiles();
 app.MapQuoteEndpoints();
 
 app.Run();
+
+public partial class Program { }

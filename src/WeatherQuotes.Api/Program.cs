@@ -14,7 +14,7 @@ var ollamaClient = new OpenAIClient(
     new OpenAIClientOptions { Endpoint = new Uri("http://localhost:11434/v1") }
 );
 
-builder.Services.AddOpenAITextEmbeddingGeneration("nomic-embed-text", ollamaClient);
+builder.Services.AddOpenAIEmbeddingGenerator("nomic-embed-text", ollamaClient);
 builder.Services.AddSingleton<EmbeddingService>();
 builder.Services.AddSingleton(_ => new QdrantClient("localhost"));
 builder.Services.AddSingleton<QuoteSearchService>();

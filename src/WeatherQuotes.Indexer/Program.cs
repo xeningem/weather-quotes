@@ -1,7 +1,6 @@
 using OpenAI;
 using System.ClientModel;
-using Microsoft.SemanticKernel.Embeddings;
-using Microsoft.SemanticKernel;
+using Microsoft.Extensions.AI;
 using Qdrant.Client;
 using Qdrant.Client.Grpc;
 using WeatherQuotes.Indexer;
@@ -16,11 +15,9 @@ var ollamaClient = new OpenAIClient(
     new OpenAIClientOptions { Endpoint = new Uri("http://localhost:11434/v1") }
 );
 
-var kernel = Kernel.CreateBuilder()
-    .AddOpenAITextEmbeddingGeneration("nomic-embed-text", ollamaClient)
-    .Build();
+IEmbeddingGenerator<string, Embedding<float>> embeddings =
+    ollamaClient.GetEmbeddingClient("nomic-embed-text").AsIEmbeddingGenerator();
 
-var embeddings = kernel.GetRequiredService<ITextEmbeddingGenerationService>();
 var qdrant = new QdrantClient("localhost");
 
 Console.WriteLine("=== Downloading missing books ===");
@@ -42,7 +39,7 @@ var processed = 0;
 for (int i = (int)startOffset; i < quotes.Count; i += batchSize)
 {
     var batch = quotes.Skip(i).Take(batchSize).ToList();
-    var vectors = await embeddings.GenerateEmbeddingsAsync(batch.Select(b => b.Text).ToList());
+    var vectors = await embeddings.GenerateAsync(batch.Select(b => b.Text).ToList());
 
     var points = new List<PointStruct>();
     for (int j = 0; j < batch.Count; j++)
@@ -51,7 +48,7 @@ for (int i = (int)startOffset; i < quotes.Count; i += batchSize)
         points.Add(new PointStruct
         {
             Id = new PointId { Num = (ulong)(i + j) },
-            Vectors = vectors[j].ToArray(),
+            Vectors = vectors[j].Vector.ToArray(),
             Payload =
             {
                 ["text"] = q.Text,

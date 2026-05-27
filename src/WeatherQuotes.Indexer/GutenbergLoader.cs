@@ -122,10 +122,11 @@ public static class GutenbergLoader
         var text = File.ReadAllText(filePath);
 
         var gutenbergStart = Regex.Match(text, @"\*\*\* START OF .*? \*\*\*", RegexOptions.IgnoreCase);
-        var gutenbergEnd = Regex.Match(text, @"\*\*\* END OF .*? \*\*\*", RegexOptions.IgnoreCase);
-
         if (gutenbergStart.Success)
             text = text[(gutenbergStart.Index + gutenbergStart.Length)..];
+
+        // Re-match END on the already-trimmed text so the index is correct.
+        var gutenbergEnd = Regex.Match(text, @"\*\*\* END OF .*? \*\*\*", RegexOptions.IgnoreCase);
         if (gutenbergEnd.Success)
             text = text[..gutenbergEnd.Index];
 

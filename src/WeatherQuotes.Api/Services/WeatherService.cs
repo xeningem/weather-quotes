@@ -53,7 +53,7 @@ public class WeatherService(HttpClient http)
     }
 }
 
-internal static class WmoCode
+public static class WmoCode
 {
     public static (string condition, string description) Describe(int code) => code switch
     {

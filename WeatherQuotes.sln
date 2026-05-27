@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherQuotes.Api", "src\We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherQuotes.Indexer", "src\WeatherQuotes.Indexer\WeatherQuotes.Indexer.csproj", "{3A23D080-B182-4435-BAFA-D2D5622EFBBF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherQuotes.Tests", "tests\WeatherQuotes.Tests\WeatherQuotes.Tests.csproj", "{33635957-E0AC-4EBB-8C75-F39155EEC577}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,18 @@ Global
 		{3A23D080-B182-4435-BAFA-D2D5622EFBBF}.Release|x64.Build.0 = Release|Any CPU
 		{3A23D080-B182-4435-BAFA-D2D5622EFBBF}.Release|x86.ActiveCfg = Release|Any CPU
 		{3A23D080-B182-4435-BAFA-D2D5622EFBBF}.Release|x86.Build.0 = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|x64.Build.0 = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Debug|x86.Build.0 = Debug|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|x64.ActiveCfg = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|x64.Build.0 = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|x86.ActiveCfg = Release|Any CPU
+		{33635957-E0AC-4EBB-8C75-F39155EEC577}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,5 +66,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2BC2A1AD-A254-4180-9FE2-25364E9D0AAE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{3A23D080-B182-4435-BAFA-D2D5622EFBBF} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{33635957-E0AC-4EBB-8C75-F39155EEC577} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

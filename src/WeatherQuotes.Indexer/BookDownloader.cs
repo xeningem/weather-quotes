@@ -12,6 +12,7 @@ public static class BookDownloader
         (107,   "Thomas Hardy",            "Far from the Madding Crowd"),
         (122,   "Thomas Hardy",            "The Return of the Native"),
         (110,   "Thomas Hardy",            "Tess of the d'Urbervilles"),
+        (1591,  "Thomas Hardy",            "Jude the Obscure"),
         (2701,  "Herman Melville",         "Moby-Dick"),
         (2554,  "Fyodor Dostoyevsky",      "Crime and Punishment"),
         (1399,  "Leo Tolstoy",             "Anna Karenina"),
@@ -24,7 +25,17 @@ public static class BookDownloader
         (161,   "Jane Austen",             "Sense and Sensibility"),
         (1342,  "Jane Austen",             "Pride and Prejudice"),
         (76,    "Mark Twain",              "Adventures of Huckleberry Finn"),
+        (1357,  "Joseph Conrad",           "Heart of Darkness"),
+        (42,    "Joseph Conrad",           "Lord Jim"),
+        (1919,  "Joseph Conrad",           "The Nigger of the Narcissus"),
+        (2814,  "Jack London",             "The Call of the Wild"),
+        (2262,  "Jack London",             "White Fang"),
+        (3407,  "Jack London",             "The Sea Wolf"),
+        (4667,  "Jack London",             "The People of the Abyss"),
+        (1798,  "Anton Chekhov",           "The Cherry Orchard"),
+        (2738,  "Anton Chekhov",           "Ward Number Six"),
     ];
+
 
     public static async Task DownloadMissingAsync(string booksDirectory)
     {

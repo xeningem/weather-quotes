@@ -48,7 +48,15 @@ for (int i = 0; i < quotes.Count; i += batchSize)
         {
             Id = new PointId { Num = id++ },
             Vectors = vectors[j].ToArray(),
-            Payload = { ["text"] = q.Text, ["book"] = q.Book, ["author"] = q.Author }
+            Payload = 
+            { 
+                ["text"] = q.Text, 
+                ["book"] = q.Book, 
+                ["author"] = q.Author,
+                ["era"] = q.Metadata.Era,
+                ["genre"] = q.Metadata.Genre,
+                ["language"] = q.Metadata.Language
+            }
         });
     }
 

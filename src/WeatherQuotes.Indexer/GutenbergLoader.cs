@@ -89,7 +89,7 @@ public static class GutenbergLoader
             return quotes;
         }
 
-        foreach (var file in Directory.GetFiles(booksDirectory, "*.txt"))
+        foreach (var file in Directory.GetFiles(booksDirectory, "*.txt").OrderBy(f => f))
         {
             var (book, author) = ParseMetadata(file);
             var metadata = GetMetadata(file);

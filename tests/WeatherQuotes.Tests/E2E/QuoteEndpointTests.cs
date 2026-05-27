@@ -78,6 +78,20 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.True(body.Weather.TemperatureCelsius != 0 || body.Weather.HumidityPercent >= 0);
     }
 
+    [Fact]
+    public async Task GetQuote_QuotesIncludeMetadataFields()
+    {
+        var client = BuildClient();
+        var body = await client
+            .GetFromJsonAsync<QuoteResponse>("/api/quote?location=London");
+
+        Assert.NotNull(body);
+        var quote = Assert.Single(body!.Quotes);
+        Assert.Equal("Victorian", quote.Era);
+        Assert.Equal("novel", quote.Genre);
+        Assert.Equal("en", quote.Language);
+    }
+
     // --- Stubs ---
 
     private sealed class StubWeatherService : IWeatherService
@@ -103,7 +117,10 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
                     Text: "It was a dark and stormy night.",
                     Book: "Paul Clifford",
                     Author: "Edward Bulwer-Lytton",
-                    Score: 0.92)
+                    Score: 0.92,
+                    Era: "Victorian",
+                    Genre: "novel",
+                    Language: "en")
             ]);
     }
 

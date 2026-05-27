@@ -27,7 +27,10 @@ public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingS
             Text: r.Payload["text"].StringValue,
             Book: r.Payload["book"].StringValue,
             Author: r.Payload["author"].StringValue,
-            Score: r.Score
+            Score: r.Score,
+            Era: r.Payload.TryGetValue("era", out var era) ? era.StringValue : null,
+            Genre: r.Payload.TryGetValue("genre", out var genre) ? genre.StringValue : null,
+            Language: r.Payload.TryGetValue("language", out var lang) ? lang.StringValue : null
         )).ToList();
 
         var filtered = all

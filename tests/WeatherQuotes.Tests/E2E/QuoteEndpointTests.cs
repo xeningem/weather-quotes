@@ -59,6 +59,9 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         var response = await client.GetAsync("/api/quote?location=Nowhere");
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        var body = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+        Assert.NotNull(body?.Error);
+        Assert.Contains("Nowhere", body!.Error);
     }
 
     [Fact]
@@ -127,4 +130,5 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     private sealed record QuoteResponse(WeatherData Weather, QuoteResult[] Quotes);
+    private sealed record ErrorResponse(string Error);
 }

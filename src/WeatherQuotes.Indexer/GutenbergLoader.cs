@@ -86,6 +86,8 @@ public static class GutenbergLoader
         { "Jack London - Martin Eden", new BookMetadata("Early 20th century", "novel", "en") },
         { "Anton Chekhov - Uncle Vanya", new BookMetadata("Late 19th century", "play", "en") },
         { "Anton Chekhov - Three Sisters", new BookMetadata("Early 20th century", "play", "en") },
+        { "Anton Chekhov - The Lady with the Dog and Other Stories", new BookMetadata("Late 19th century", "short story", "en") },
+        { "Anton Chekhov - The Darling and Other Stories", new BookMetadata("Late 19th century", "short story", "en") },
         { "George Eliot - Middlemarch", new BookMetadata("Victorian", "novel", "en") },
         { "George Eliot - The Mill on the Floss", new BookMetadata("Victorian", "novel", "en") },
         { "D.H. Lawrence - Sons and Lovers", new BookMetadata("Early 20th century", "novel", "en") },

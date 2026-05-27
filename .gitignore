@@ -1,0 +1,23 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+## Config with secrets
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Logs
+*.log
+*.err
+wsl-qdrant.log
+
+## Books corpus (large text files, not versioned)
+books/

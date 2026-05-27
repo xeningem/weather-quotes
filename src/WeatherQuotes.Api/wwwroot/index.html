@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather Quotes</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #f5f0e8;
+      color: #2c2c2c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3rem 1rem;
+    }
+
+    h1 { font-size: 2rem; font-weight: normal; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+
+    .subtitle { color: #888; font-style: italic; margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+    .search-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    .search-row { display: flex; gap: 0.5rem; }
+
+    input {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+      background: #fff;
+    }
+
+    input:focus { outline: none; border-color: #888; }
+
+    button {
+      padding: 0.65rem 1.4rem;
+      border: 1px solid #2c2c2c;
+      border-radius: 4px;
+      background: #2c2c2c;
+      color: #f5f0e8;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    button:disabled { opacity: 0.45; cursor: default; }
+
+    .suggestions {
+      position: absolute;
+      top: calc(100% + 2px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .suggestion-item {
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #f0ece4;
+      transition: background 0.1s;
+    }
+
+    .suggestion-item:last-child { border-bottom: none; }
+    .suggestion-item:hover, .suggestion-item.active { background: #f5f0e8; }
+
+    .suggestion-country {
+      font-size: 0.8rem;
+      color: #999;
+      margin-left: 0.4rem;
+    }
+
+    .weather-summary { font-size: 0.9rem; color: #666; margin-bottom: 2rem; text-align: center; }
+
+    .quotes { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .quote-card {
+      background: #fff;
+      border-left: 3px solid #c8b89a;
+      padding: 1.25rem 1.5rem;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .quote-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.75rem; font-style: italic; }
+
+    .quote-meta { font-size: 0.82rem; color: #888; }
+    .quote-meta strong { color: #555; }
+
+    .error { color: #c0392b; font-style: italic; }
+
+    .spinner {
+      width: 24px; height: 24px;
+      border: 2px solid #ccc;
+      border-top-color: #2c2c2c;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body x-data="app()">
+  <h1>Weather Quotes</h1>
+  <p class="subtitle">Real weather. Literary soul.</p>
+
+  <div class="search-wrap" @keydown.escape="closeSuggestions()">
+    <div class="search-row">
+      <input
+        type="text"
+        placeholder="City name…"
+        x-model="query"
+        @input.debounce.300ms="fetchSuggestions()"
+        @keydown.arrow-down.prevent="moveCursor(1)"
+        @keydown.arrow-up.prevent="moveCursor(-1)"
+        @keydown.enter.prevent="onEnter()"
+        @focus="if (suggestions.length) showSuggestions = true"
+        autocomplete="off"
+      />
+      <button @click="searchSelected()" :disabled="loading || !query.trim()">Find</button>
+    </div>
+
+    <div class="suggestions" x-show="showSuggestions && suggestions.length" x-cloak>
+      <template x-for="(s, i) in suggestions" :key="s.id">
+        <div
+          class="suggestion-item"
+          :class="{ active: i === cursor }"
+          @mousedown.prevent="selectSuggestion(s)"
+        >
+          <span x-text="s.name"></span>
+          <span class="suggestion-country" x-text="[s.admin1, s.country].filter(Boolean).join(', ')"></span>
+        </div>
+      </template>
+    </div>
+  </div>
+
+  <template x-if="error">
+    <p class="error" x-text="error"></p>
+  </template>
+
+  <template x-if="loading">
+    <div class="spinner"></div>
+  </template>
+
+  <template x-if="result">
+    <div>
+      <p class="weather-summary" x-text="weatherSummary"></p>
+      <div class="quotes">
+        <template x-for="q in result.quotes" :key="q.text">
+          <div class="quote-card">
+            <p class="quote-text" x-text="'“' + q.text + '”'"></p>
+            <p class="quote-meta">
+              <strong x-text="q.book"></strong>
+              &mdash; <span x-text="q.author"></span>
+            </p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    function app() {
+      return {
+        query: '',
+        suggestions: [],
+        showSuggestions: false,
+        cursor: -1,
+        loading: false,
+        result: null,
+        error: null,
+
+        get weatherSummary() {
+          if (!this.result) return '';
+          const w = this.result.weather;
+          return `${w.location} · ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+        },
+
+        async fetchSuggestions() {
+          const q = this.query.trim();
+          if (q.length < 2) { this.suggestions = []; this.showSuggestions = false; return; }
+
+          const res = await fetch(
+            `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en`
+          );
+          const data = await res.json();
+          this.suggestions = data.results ?? [];
+          this.cursor = -1;
+          this.showSuggestions = this.suggestions.length > 0;
+        },
+
+        selectSuggestion(s) {
+          this.query = s.name + (s.country ? `, ${s.country}` : '');
+          this.closeSuggestions();
+          this.searchSelected();
+        },
+
+        onEnter() {
+          if (this.cursor >= 0 && this.cursor < this.suggestions.length) {
+            this.selectSuggestion(this.suggestions[this.cursor]);
+          } else {
+            this.closeSuggestions();
+            this.searchSelected();
+          }
+        },
+
+        moveCursor(dir) {
+          if (!this.showSuggestions) return;
+          this.cursor = Math.max(-1, Math.min(this.suggestions.length - 1, this.cursor + dir));
+        },
+
+        closeSuggestions() {
+          this.showSuggestions = false;
+          this.cursor = -1;
+        },
+
+        async searchSelected() {
+          const loc = this.query.trim();
+          if (!loc) return;
+          this.closeSuggestions();
+          this.loading = true;
+          this.result = null;
+          this.error = null;
+          try {
+            const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}`);
+            if (!res.ok) throw new Error((await res.text()) || `Error ${res.status}`);
+            this.result = await res.json();
+          } catch (e) {
+            this.error = e.message || 'Something went wrong.';
+          } finally {
+            this.loading = false;
+          }
+        }
+      };
+    }
+  </script>
+</body>
+</html>

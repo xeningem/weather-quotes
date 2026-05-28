@@ -315,16 +315,20 @@
           return this.result?.quotes[this.currentIndex] ?? null;
         },
 
+        weatherIcon(condition) {
+          return { Thunderstorm: '⛈️', Rain: '🌧️', Snow: '❄️', Fog: '🌫️', Drizzle: '🌦️', Clear: '☀️', Cloudy: '🌥️' }[condition] ?? '🌡️';
+        },
+
         get weatherSummary() {
           if (!this.result) return '';
           const w = this.result.weather;
-          return `${w.location} · ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+          return `${w.location} · ${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
         },
 
         get weatherLabel() {
           if (!this.result) return '';
           const w = this.result.weather;
-          return `${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+          return `${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
         },
 
         async nextQuote() {

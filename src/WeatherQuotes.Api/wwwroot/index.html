@@ -16,18 +16,31 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      padding: 3rem 1rem;
+      padding: 3rem 1.25rem 5rem;
     }
 
-    h1 { font-size: 2rem; font-weight: normal; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+    .container {
+      width: 100%;
+      max-width: 660px;
+    }
 
-    .subtitle { color: #888; font-style: italic; margin-bottom: 2.5rem; font-size: 0.95rem; }
+    h1 {
+      font-size: 1.9rem;
+      font-weight: normal;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.3rem;
+    }
 
+    .subtitle {
+      color: #999;
+      font-style: italic;
+      margin-bottom: 2.75rem;
+      font-size: 0.95rem;
+    }
+
+    /* ── Search ── */
     .search-wrap {
       position: relative;
-      width: 100%;
-      max-width: 480px;
       margin-bottom: 2.5rem;
     }
 
@@ -35,7 +48,8 @@
 
     input {
       flex: 1;
-      padding: 0.65rem 1rem;
+      min-width: 0;
+      padding: 0.7rem 1rem;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-family: inherit;
@@ -45,8 +59,8 @@
 
     input:focus { outline: none; border-color: #888; }
 
-    button {
-      padding: 0.65rem 1.4rem;
+    .btn-find {
+      padding: 0.7rem 1.4rem;
       border: 1px solid #2c2c2c;
       border-radius: 4px;
       background: #2c2c2c;
@@ -58,8 +72,9 @@
       white-space: nowrap;
     }
 
-    button:disabled { opacity: 0.45; cursor: default; }
+    .btn-find:disabled { opacity: 0.4; cursor: default; }
 
+    /* ── Suggestions ── */
     .suggestions {
       position: absolute;
       top: calc(100% + 2px);
@@ -86,101 +101,202 @@
 
     .suggestion-country {
       font-size: 0.8rem;
-      color: #999;
+      color: #aaa;
       margin-left: 0.4rem;
     }
 
-    .weather-summary { font-size: 0.9rem; color: #666; margin-bottom: 2rem; text-align: center; }
+    /* ── Weather summary ── */
+    .weather-summary {
+      font-size: 0.88rem;
+      color: #777;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-    .quotes { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 1.5rem; }
-
+    /* ── Quote card ── */
     .quote-card {
       background: #fff;
       border-left: 3px solid #c8b89a;
-      padding: 1.25rem 1.5rem;
+      padding: 1.5rem 1.75rem;
+      border-radius: 0 4px 4px 0;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .quote-weather-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.75rem;
+      color: #bbb;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+      margin-bottom: 1rem;
+    }
+
+    .quote-text {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      font-style: italic;
+      margin-bottom: 1.1rem;
+      max-width: 62ch;
+    }
+
+    .quote-meta {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+
+    .quote-meta strong { color: #777; font-weight: 600; }
+
+    /* ── Try another button ── */
+    .btn-next {
+      margin-top: 1.25rem;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid #d4c9b8;
+      border-radius: 4px;
+      background: transparent;
+      color: #9a8a74;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .btn-next:hover { background: #ede8e0; color: #5a4a35; border-color: #c8b89a; }
+
+    /* ── Skeleton ── */
+    .skeleton-wrap { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .skeleton-card {
+      background: #fff;
+      border-left: 3px solid #e8e2d8;
+      padding: 1.5rem 1.75rem;
       border-radius: 0 4px 4px 0;
     }
 
-    .quote-text { font-size: 1.05rem; line-height: 1.65; margin-bottom: 0.75rem; font-style: italic; }
-
-    .quote-meta { font-size: 0.82rem; color: #888; }
-    .quote-meta strong { color: #555; }
-    .quote-tag { display: inline-block; font-size: 0.72rem; color: #aaa; border: 1px solid #e0d8cc; border-radius: 3px; padding: 0 0.35rem; margin-left: 0.5rem; vertical-align: middle; }
-
-    .error { color: #c0392b; font-style: italic; }
-
-    .spinner {
-      width: 24px; height: 24px;
-      border: 2px solid #ccc;
-      border-top-color: #2c2c2c;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin: 1rem auto;
+    .skeleton-line {
+      height: 0.9rem;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #ede8e0 25%, #f5f1eb 50%, #ede8e0 75%);
+      background-size: 300% 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      margin-bottom: 0.7rem;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .skeleton-line:last-child { margin-bottom: 0; }
+    .skeleton-line.w-full  { width: 100%; }
+    .skeleton-line.w-4-5   { width: 82%; }
+    .skeleton-line.w-1-2   { width: 50%; }
+    .skeleton-line.w-1-3   { width: 36%; height: 0.7rem; margin-top: 0.4rem; }
+    .skeleton-line.w-label { width: 28%; height: 0.65rem; margin-bottom: 1rem; }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    /* ── Error ── */
+    .error {
+      color: #b03030;
+      font-style: italic;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+      body { padding: 2rem 1rem 3.5rem; }
+      h1   { font-size: 1.6rem; }
+      .search-row { flex-wrap: wrap; }
+      input, .btn-find { width: 100%; }
+      .quote-text { font-size: 1.1rem; }
+      .quote-card { padding: 1.25rem 1.25rem; }
+    }
   </style>
 </head>
 <body x-data="app()">
-  <h1>Weather Quotes</h1>
-  <p class="subtitle">Real weather. Literary soul.</p>
+  <div class="container">
+    <h1>Weather Quotes</h1>
+    <p class="subtitle">Real weather. Literary soul.</p>
 
-  <div class="search-wrap" @keydown.escape="closeSuggestions()">
-    <div class="search-row">
-      <input
-        type="text"
-        placeholder="City name…"
-        x-model="query"
-        @input.debounce.300ms="fetchSuggestions()"
-        @keydown.arrow-down.prevent="moveCursor(1)"
-        @keydown.arrow-up.prevent="moveCursor(-1)"
-        @keydown.enter.prevent="onEnter()"
-        @focus="if (suggestions.length) showSuggestions = true"
-        autocomplete="off"
-      />
-      <button @click="searchSelected()" :disabled="loading || !query.trim()">Find</button>
-    </div>
+    <div class="search-wrap" @keydown.escape="closeSuggestions()">
+      <div class="search-row">
+        <input
+          type="text"
+          placeholder="City name…"
+          x-model="query"
+          @input.debounce.300ms="fetchSuggestions()"
+          @keydown.arrow-down.prevent="moveCursor(1)"
+          @keydown.arrow-up.prevent="moveCursor(-1)"
+          @keydown.enter.prevent="onEnter()"
+          @focus="if (suggestions.length) showSuggestions = true"
+          autocomplete="off"
+        />
+        <button class="btn-find" @click="searchSelected()" :disabled="loading || !query.trim()">Find</button>
+      </div>
 
-    <div class="suggestions" x-show="showSuggestions && suggestions.length" x-cloak>
-      <template x-for="(s, i) in suggestions" :key="s.id">
-        <div
-          class="suggestion-item"
-          :class="{ active: i === cursor }"
-          @mousedown.prevent="selectSuggestion(s)"
-        >
-          <span x-text="s.name"></span>
-          <span class="suggestion-country" x-text="[s.admin1, s.country].filter(Boolean).join(', ')"></span>
-        </div>
-      </template>
-    </div>
-  </div>
-
-  <template x-if="error">
-    <p class="error" x-text="error"></p>
-  </template>
-
-  <template x-if="loading">
-    <div class="spinner"></div>
-  </template>
-
-  <template x-if="result">
-    <div>
-      <p class="weather-summary" x-text="weatherSummary"></p>
-      <div class="quotes">
-        <template x-for="q in result.quotes" :key="q.text">
-          <div class="quote-card">
-            <p class="quote-text" x-text="'“' + q.text + '”'"></p>
-            <p class="quote-meta">
-              <strong x-text="q.book"></strong>
-              &mdash; <span x-text="q.author"></span>
-              <template x-if="q.era"><span class="quote-tag" x-text="q.era"></span></template>
-              <template x-if="q.genre && q.genre !== 'novel'"><span class="quote-tag" x-text="q.genre"></span></template>
-            </p>
+      <div class="suggestions" x-show="showSuggestions && suggestions.length" x-cloak>
+        <template x-for="(s, i) in suggestions" :key="s.id">
+          <div
+            class="suggestion-item"
+            :class="{ active: i === cursor }"
+            @mousedown.prevent="selectSuggestion(s)"
+          >
+            <span x-text="s.name"></span>
+            <span class="suggestion-country" x-text="[s.admin1, s.country].filter(Boolean).join(', ')"></span>
           </div>
         </template>
       </div>
     </div>
-  </template>
+
+    <template x-if="error">
+      <p class="error" x-text="error"></p>
+    </template>
+
+    <template x-if="loading">
+      <div class="skeleton-wrap">
+        <template x-for="i in [1,2,3]" :key="i">
+          <div class="skeleton-card">
+            <div class="skeleton-line w-label"></div>
+            <div class="skeleton-line w-full"></div>
+            <div class="skeleton-line w-4-5"></div>
+            <div class="skeleton-line w-full"></div>
+            <div class="skeleton-line w-1-2"></div>
+            <div class="skeleton-line w-1-3"></div>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <template x-if="result && !loading">
+      <div>
+        <p class="weather-summary" x-text="weatherSummary"></p>
+
+        <template x-if="showCard">
+          <div class="quote-card">
+            <p class="quote-weather-label" x-text="weatherLabel"></p>
+            <p class="quote-text" x-text="'“' + currentQuote.text + '”'"></p>
+            <p class="quote-meta">
+              <strong x-text="currentQuote.book"></strong>
+              &mdash; <span x-text="currentQuote.author"></span>
+              <template x-if="currentQuote.era">
+                <span x-text="' · ' + currentQuote.era"></span>
+              </template>
+            </p>
+          </div>
+        </template>
+
+        <template x-if="result.quotes.length > 1">
+          <button class="btn-next" @click="nextQuote()">Try another quote →</button>
+        </template>
+      </div>
+    </template>
+  </div>
 
   <script>
     function app() {
@@ -192,17 +308,39 @@
         loading: false,
         result: null,
         error: null,
+        currentIndex: 0,
+        showCard: false,
+
+        get currentQuote() {
+          return this.result?.quotes[this.currentIndex] ?? null;
+        },
+
+        weatherIcon(condition) {
+          return { Thunderstorm: '⛈️', Rain: '🌧️', Snow: '❄️', Fog: '🌫️', Drizzle: '🌦️', Clear: '☀️', Cloudy: '🌥️' }[condition] ?? '🌡️';
+        },
 
         get weatherSummary() {
           if (!this.result) return '';
           const w = this.result.weather;
-          return `${w.location} · ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+          return `${w.location} · ${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+        },
+
+        get weatherLabel() {
+          if (!this.result) return '';
+          const w = this.result.weather;
+          return `${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+        },
+
+        async nextQuote() {
+          this.showCard = false;
+          await new Promise(r => setTimeout(r, 60));
+          this.currentIndex = (this.currentIndex + 1) % this.result.quotes.length;
+          this.showCard = true;
         },
 
         async fetchSuggestions() {
           const q = this.query.trim();
           if (q.length < 2) { this.suggestions = []; this.showSuggestions = false; return; }
-
           const res = await fetch(
             `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=en`
           );
@@ -244,10 +382,13 @@
           this.loading = true;
           this.result = null;
           this.error = null;
+          this.currentIndex = 0;
+          this.showCard = false;
           try {
             const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}`);
             if (!res.ok) throw new Error((await res.text()) || `Error ${res.status}`);
             this.result = await res.json();
+            this.showCard = true;
           } catch (e) {
             this.error = e.message || 'Something went wrong.';
           } finally {

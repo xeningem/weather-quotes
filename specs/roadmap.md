@@ -16,24 +16,24 @@ _Goal: the full pipeline runs locally with real data._
 
 ---
 
-## Phase 2 — Corpus quality & growth
+## Phase 2 — Corpus quality & growth ✓
 _Goal: better quotes, fewer irrelevant matches._
 
-- [ ] Review and curate the weather keyword filter in `GutenbergLoader`
-- [ ] Add more books with strong weather/nature prose (Hardy, Conrad, Chekhov, London)
-- [ ] Store book metadata (era, genre, language) in Qdrant payload for future filtering
-- [ ] Tune minimum/maximum paragraph length for quote quality
+- [x] Review and curate the weather keyword filter in `GutenbergLoader`
+- [x] Add more books with strong weather/nature prose (Hardy, Conrad, Chekhov, London, Eliot, Lawrence — 44 books total)
+- [x] Store book metadata (era, genre, language) in Qdrant payload for future filtering
+- [x] Tune minimum/maximum paragraph length for quote quality (120–1200 chars, 27 402 paragraphs indexed)
 
 ---
 
-## Phase 3 — UI / UX polish
+## Phase 3 — UI / UX polish ✓
 _Goal: the experience feels intentional, not like a prototype._
 
-- [ ] Typography and layout refined (spacing, font sizing, reading rhythm)
-- [ ] Smooth loading state (no layout shift)
-- [ ] Mobile layout
-- [ ] Quote card shows a short weather icon or label alongside the literary text
-- [ ] "Try another quote" button to cycle through results without re-fetching weather
+- [x] Typography and layout refined (spacing, font sizing, reading rhythm)
+- [x] Smooth loading state (skeleton, no layout shift)
+- [x] Mobile layout (flex-wrap at 480px)
+- [x] Quote card shows weather icon + label alongside the literary text
+- [x] "Try another quote" button to cycle through results without re-fetching weather
 
 ---
 

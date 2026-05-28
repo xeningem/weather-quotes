@@ -37,19 +37,19 @@ _Goal: the experience feels intentional, not like a prototype._
 
 ---
 
-## Phase 4 — Connection visibility
+## Phase 4 — Connection visibility ✓
 _Goal: make it obvious why a specific quote was chosen for the current weather._
 
-- [ ] Expose `weatherProse` (the `ToNaturalLanguage()` text used as the embedding query) in the API response
-- [ ] Show similarity score as a readable indicator (e.g. percentage or bar)
-- [ ] Highlight words in the quote that also appear in the weather prose
-- [ ] Debug toggles in the UI to show/hide each piece of debug info
+- [x] Expose `weatherProse` (the `ToNaturalLanguage()` text used as the embedding query) in the API response
+- [x] Show similarity score as a readable indicator (% match label)
+- [x] Highlight words in the quote that also appear in the weather prose
+- [x] Debug toggles in the UI to show/hide each piece of debug info (Prose, Score, Highlights)
 
 ---
 
-## Phase 5 — Forecast support
+## Phase 5 — Forecast support ✓
 _Goal: get a quote for weather that hasn't happened yet._
 
-- [ ] Extend `WeatherService` to fetch a daily forecast (Open-Meteo supports this)
-- [ ] Add a date/day selector to the UI ("today", "tomorrow", "+3 days")
-- [ ] API endpoint: `GET /api/quote?location=...&date=...`
+- [x] Extend `WeatherService` to fetch a daily forecast (Open-Meteo `/forecast?daily=...`)
+- [x] Add a day selector to the UI (Today / Tomorrow / +2 days / +3 days pills)
+- [x] API endpoint: `GET /api/quote?location=...&offset=0..3`

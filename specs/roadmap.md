@@ -16,13 +16,13 @@ _Goal: the full pipeline runs locally with real data._
 
 ---
 
-## Phase 2 — Corpus quality & growth
+## Phase 2 — Corpus quality & growth ✓
 _Goal: better quotes, fewer irrelevant matches._
 
-- [ ] Review and curate the weather keyword filter in `GutenbergLoader`
-- [ ] Add more books with strong weather/nature prose (Hardy, Conrad, Chekhov, London)
-- [ ] Store book metadata (era, genre, language) in Qdrant payload for future filtering
-- [ ] Tune minimum/maximum paragraph length for quote quality
+- [x] Review and curate the weather keyword filter in `GutenbergLoader`
+- [x] Add more books with strong weather/nature prose (Hardy, Conrad, Chekhov, London, Eliot, Lawrence — 44 books total)
+- [x] Store book metadata (era, genre, language) in Qdrant payload for future filtering
+- [x] Tune minimum/maximum paragraph length for quote quality (120–1200 chars, 27 402 paragraphs indexed)
 
 ---
 

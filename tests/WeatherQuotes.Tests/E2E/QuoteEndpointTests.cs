@@ -102,6 +102,27 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.False(string.IsNullOrWhiteSpace(body!.WeatherProse));
     }
 
+    [Fact]
+    public async Task GetQuote_WithOffset1_ReturnsOkWithDate()
+    {
+        var client = BuildClient();
+        var body = await client.GetFromJsonAsync<QuoteResponse>("/api/quote?location=London&offset=1");
+
+        Assert.NotNull(body);
+        Assert.NotNull(body!.Weather.Date);
+        Assert.Equal(DateOnly.FromDateTime(DateTime.Today.AddDays(1)), body.Weather.Date);
+        Assert.Single(body.Quotes);
+    }
+
+    [Fact]
+    public async Task GetQuote_WithOffsetOutOfRange_ReturnsBadRequest()
+    {
+        var client = BuildClient();
+        var response = await client.GetAsync("/api/quote?location=London&offset=5");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
     // --- Stubs ---
 
     private sealed class StubWeatherService : IWeatherService
@@ -114,6 +135,17 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
                 HumidityPercent: 80,
                 WindSpeedMps: 4,
                 Condition: "Cloudy"
+            ));
+
+        public Task<WeatherData> GetForecastWeatherAsync(string location, int offsetDays) =>
+            Task.FromResult(new WeatherData(
+                Location: "London, UK",
+                Description: "light rain",
+                TemperatureCelsius: 11,
+                HumidityPercent: 80,
+                WindSpeedMps: 5,
+                Condition: "Rain",
+                Date: DateOnly.FromDateTime(DateTime.Today.AddDays(offsetDays))
             ));
     }
 
@@ -138,8 +170,12 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     {
         public Task<WeatherData> GetCurrentWeatherAsync(string location) =>
             throw new ArgumentException($"Location '{location}' not found.");
+
+        public Task<WeatherData> GetForecastWeatherAsync(string location, int offsetDays) =>
+            throw new ArgumentException($"Location '{location}' not found.");
     }
 
     private sealed record QuoteResponse(WeatherData Weather, string WeatherProse, QuoteResult[] Quotes);
+    // WeatherData already includes Date (DateOnly?) from the model
     private sealed record ErrorResponse(string Error);
 }

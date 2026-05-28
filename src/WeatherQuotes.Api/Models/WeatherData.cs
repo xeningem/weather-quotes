@@ -6,7 +6,8 @@ public record WeatherData(
     double TemperatureCelsius,
     int HumidityPercent,
     double WindSpeedMps,
-    string Condition
+    string Condition,
+    DateOnly? Date = null
 )
 {
     public string ToNaturalLanguage()

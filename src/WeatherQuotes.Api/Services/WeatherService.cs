@@ -6,6 +6,7 @@ namespace WeatherQuotes.Api.Services;
 public interface IWeatherService
 {
     Task<WeatherData> GetCurrentWeatherAsync(string location);
+    Task<WeatherData> GetForecastWeatherAsync(string location, int offsetDays);
 }
 
 public class WeatherService(HttpClient http) : IWeatherService
@@ -38,6 +39,58 @@ public class WeatherService(HttpClient http) : IWeatherService
             Condition: condition
         );
     }
+
+    public async Task<WeatherData> GetForecastWeatherAsync(string location, int offsetDays)
+    {
+        var (lat, lon, resolvedName) = await GeocodeAsync(location);
+
+        var url = $"https://api.open-meteo.com/v1/forecast" +
+                  $"?latitude={lat}&longitude={lon}" +
+                  $"&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,precipitation_sum" +
+                  $"&forecast_days={offsetDays + 1}" +
+                  $"&wind_speed_unit=ms" +
+                  $"&timezone=auto";
+
+        var response = await http.GetAsync(url);
+        response.EnsureSuccessStatusCode();
+
+        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var daily = doc.RootElement.GetProperty("daily");
+
+        var code    = daily.GetProperty("weather_code")[offsetDays].GetInt32();
+        var tempMax = daily.GetProperty("temperature_2m_max")[offsetDays].GetDouble();
+        var tempMin = daily.GetProperty("temperature_2m_min")[offsetDays].GetDouble();
+        var wind    = daily.GetProperty("wind_speed_10m_max")[offsetDays].GetDouble();
+        var precip  = daily.GetProperty("precipitation_sum")[offsetDays].GetDouble();
+        var dateStr = daily.GetProperty("time")[offsetDays].GetString()!;
+
+        var (condition, description) = WmoCode.Describe(code);
+        var temp = (tempMax + tempMin) / 2.0;
+        var humidity = EstimateHumidity(condition, precip);
+        var date = DateOnly.Parse(dateStr);
+
+        return new WeatherData(
+            Location: resolvedName,
+            Description: description,
+            TemperatureCelsius: temp,
+            HumidityPercent: humidity,
+            WindSpeedMps: wind,
+            Condition: condition,
+            Date: date
+        );
+    }
+
+    private static int EstimateHumidity(string condition, double precipMm) => condition switch
+    {
+        "Thunderstorm" => 90,
+        "Rain"         => precipMm > 10 ? 90 : 80,
+        "Snow"         => 85,
+        "Drizzle"      => 75,
+        "Fog"          => 95,
+        "Cloudy"       => 65,
+        "Clear"        => 40,
+        _              => 60
+    };
 
     private async Task<(double lat, double lon, string name)> GeocodeAsync(string location)
     {

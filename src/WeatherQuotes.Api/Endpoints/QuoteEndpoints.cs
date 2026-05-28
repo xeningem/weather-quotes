@@ -10,11 +10,17 @@ public static class QuoteEndpoints
         app.MapGet("/api/quote", async (
             string location,
             IWeatherService weatherService,
-            IQuoteSearchService quoteSearchService) =>
+            IQuoteSearchService quoteSearchService,
+            int offset = 0) =>
         {
+            if (offset < 0 || offset > 3)
+                return Results.BadRequest(new { error = "offset must be between 0 and 3" });
+
             try
             {
-                var weather = await weatherService.GetCurrentWeatherAsync(location);
+                var weather = offset == 0
+                    ? await weatherService.GetCurrentWeatherAsync(location)
+                    : await weatherService.GetForecastWeatherAsync(location, offset);
                 var weatherProse = weather.ToNaturalLanguage();
                 var quotes = await quoteSearchService.SearchAsync(weatherProse, weather.TemperatureCelsius, weather.Condition);
                 return Results.Ok(new { weather, weatherProse, quotes });

@@ -169,6 +169,34 @@
 
     .btn-next:hover { background: #ede8e0; color: #5a4a35; border-color: #c8b89a; }
 
+    /* ── Day selector ── */
+    .day-row {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .day-btn {
+      padding: 0.3rem 0.8rem;
+      border: 1px solid #d4c9b8;
+      border-radius: 20px;
+      background: transparent;
+      color: #9a8a74;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .day-btn.active {
+      border-color: #2c2c2c;
+      background: #2c2c2c;
+      color: #f5f0e8;
+    }
+
+    .day-btn:hover:not(.active) { border-color: #c8b89a; color: #5a4a35; }
+
     /* ── Debug toggles ── */
     .debug-row {
       margin-top: 1.1rem;
@@ -314,6 +342,17 @@
       </div>
     </div>
 
+    <div class="day-row">
+      <template x-for="(label, i) in dayLabels" :key="i">
+        <button
+          class="day-btn"
+          :class="{ active: offset === i }"
+          @click="selectDay(i)"
+          x-text="label">
+        </button>
+      </template>
+    </div>
+
     <template x-if="error">
       <p class="error" x-text="error"></p>
     </template>
@@ -386,6 +425,8 @@
         showProse: false,
         showScore: false,
         showHighlights: false,
+        offset: 0,
+        dayLabels: ['Today', 'Tomorrow', '+2 days', '+3 days'],
 
         get currentQuote() {
           return this.result?.quotes[this.currentIndex] ?? null;
@@ -421,7 +462,13 @@
         get weatherSummary() {
           if (!this.result) return '';
           const w = this.result.weather;
-          return `${w.location} · ${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+          const datePart = w.date ? ` · ${this.formatDate(w.date)}` : '';
+          return `${w.location}${datePart} · ${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+        },
+
+        formatDate(dateStr) {
+          const d = new Date(dateStr + 'T12:00:00');
+          return d.toLocaleDateString('en-GB', { weekday: 'short', month: 'short', day: 'numeric' });
         },
 
         get weatherLabel() {
@@ -474,10 +521,36 @@
           this.cursor = -1;
         },
 
+        selectDay(i) {
+          this.offset = i;
+          if (this.result) this.searchWithCurrentOffset();
+        },
+
+        async searchWithCurrentOffset() {
+          const loc = this.query.trim();
+          if (!loc) return;
+          this.loading = true;
+          this.result = null;
+          this.error = null;
+          this.currentIndex = 0;
+          this.showCard = false;
+          try {
+            const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}&offset=${this.offset}`);
+            if (!res.ok) throw new Error((await res.text()) || `Error ${res.status}`);
+            this.result = await res.json();
+            this.showCard = true;
+          } catch (e) {
+            this.error = e.message || 'Something went wrong.';
+          } finally {
+            this.loading = false;
+          }
+        },
+
         async searchSelected() {
           const loc = this.query.trim();
           if (!loc) return;
           this.closeSuggestions();
+          this.offset = 0;
           this.loading = true;
           this.result = null;
           this.error = null;
@@ -487,7 +560,7 @@
           this.showScore = false;
           this.showHighlights = false;
           try {
-            const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}`);
+            const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}&offset=${this.offset}`);
             if (!res.ok) throw new Error((await res.text()) || `Error ${res.status}`);
             this.result = await res.json();
             this.showCard = true;

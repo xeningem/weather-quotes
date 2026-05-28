@@ -91,6 +91,17 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal("en", quote.Language);
     }
 
+    [Fact]
+    public async Task GetQuote_ResponseIncludesWeatherProse()
+    {
+        var client = BuildClient();
+        var body = await client
+            .GetFromJsonAsync<QuoteResponse>("/api/quote?location=London");
+
+        Assert.NotNull(body);
+        Assert.False(string.IsNullOrWhiteSpace(body!.WeatherProse));
+    }
+
     // --- Stubs ---
 
     private sealed class StubWeatherService : IWeatherService
@@ -129,6 +140,6 @@ public class QuoteEndpointTests : IClassFixture<WebApplicationFactory<Program>>
             throw new ArgumentException($"Location '{location}' not found.");
     }
 
-    private sealed record QuoteResponse(WeatherData Weather, QuoteResult[] Quotes);
+    private sealed record QuoteResponse(WeatherData Weather, string WeatherProse, QuoteResult[] Quotes);
     private sealed record ErrorResponse(string Error);
 }

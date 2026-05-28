@@ -15,8 +15,9 @@ public static class QuoteEndpoints
             try
             {
                 var weather = await weatherService.GetCurrentWeatherAsync(location);
-                var quotes = await quoteSearchService.SearchAsync(weather.ToNaturalLanguage(), weather.TemperatureCelsius, weather.Condition);
-                return Results.Ok(new { weather, quotes });
+                var weatherProse = weather.ToNaturalLanguage();
+                var quotes = await quoteSearchService.SearchAsync(weatherProse, weather.TemperatureCelsius, weather.Condition);
+                return Results.Ok(new { weather, weatherProse, quotes });
             }
             catch (ArgumentException ex)
             {

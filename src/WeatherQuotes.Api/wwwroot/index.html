@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -169,6 +169,66 @@
 
     .btn-next:hover { background: #ede8e0; color: #5a4a35; border-color: #c8b89a; }
 
+    /* ── Debug toggles ── */
+    .debug-row {
+      margin-top: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.78rem;
+      color: #bbb;
+    }
+
+    .debug-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid #e0d8cc;
+      border-radius: 20px;
+      cursor: pointer;
+      color: #bbb;
+      background: transparent;
+      font-family: inherit;
+      font-size: inherit;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .debug-toggle.active { border-color: #c8b89a; color: #8a7a65; background: #faf7f2; }
+    .debug-toggle:hover  { border-color: #c8b89a; color: #8a7a65; }
+
+    /* ── Prose block ── */
+    .prose-block {
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      border-left: 2px solid #e0d8cc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.82rem;
+      color: #aaa;
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .prose-label {
+      display: block;
+      font-style: normal;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #ccc;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── Highlight ── */
+    mark {
+      background: #f2e4c4;
+      border-radius: 2px;
+      padding: 0 1px;
+      color: inherit;
+    }
+
     /* ── Skeleton ── */
     .skeleton-wrap { display: flex; flex-direction: column; gap: 1.5rem; }
 
@@ -280,20 +340,33 @@
         <template x-if="showCard">
           <div class="quote-card">
             <p class="quote-weather-label" x-text="weatherLabel"></p>
-            <p class="quote-text" x-text="'“' + currentQuote.text + '”'"></p>
+            <p class="quote-text" x-html="highlightedText"></p>
             <p class="quote-meta">
               <strong x-text="currentQuote.book"></strong>
               &mdash; <span x-text="currentQuote.author"></span>
-              <template x-if="currentQuote.era">
-                <span x-text="' · ' + currentQuote.era"></span>
-              </template>
+              <span x-show="currentQuote && currentQuote.era" x-text="' · ' + (currentQuote?.era ?? '')"></span>
+              <span x-show="showScore" x-text="' · ' + Math.round((currentQuote?.score ?? 0) * 100) + '% match'"></span>
             </p>
+          </div>
+        </template>
+
+        <template x-if="result && showProse">
+          <div class="prose-block">
+            <span class="prose-label">Weather used for search</span>
+            <span x-text="result.weatherProse"></span>
           </div>
         </template>
 
         <template x-if="result.quotes.length > 1">
           <button class="btn-next" @click="nextQuote()">Try another quote →</button>
         </template>
+
+        <div class="debug-row">
+          <span>Show:</span>
+          <button class="debug-toggle" :class="{ active: showProse }" @click="showProse = !showProse">Prose</button>
+          <button class="debug-toggle" :class="{ active: showScore }" @click="showScore = !showScore">Score</button>
+          <button class="debug-toggle" :class="{ active: showHighlights }" @click="showHighlights = !showHighlights">Highlights</button>
+        </div>
       </div>
     </template>
   </div>
@@ -310,9 +383,35 @@
         error: null,
         currentIndex: 0,
         showCard: false,
+        showProse: false,
+        showScore: false,
+        showHighlights: false,
 
         get currentQuote() {
           return this.result?.quotes[this.currentIndex] ?? null;
+        },
+
+        get highlightedText() {
+          const q = this.currentQuote;
+          if (!q) return '';
+          const raw = '“' + q.text + '”';
+          if (!this.showHighlights || !this.result?.weatherProse) return this.escapeHtml(raw);
+          const stopWords = new Set(['a','an','the','in','of','on','at','to','and','or','but','is','was','it','its','as','by','for','with','that','this','from','into','over','under','between','about','above','below','after','before']);
+          const proseWords = new Set(
+            this.result.weatherProse.toLowerCase().split(/\W+/).filter(w => w.length > 2 && !stopWords.has(w))
+          );
+          return raw.replace(/[\w']+|[^\w']+/g, seg => {
+            if (/\w/.test(seg[0])) {
+              const lower = seg.toLowerCase().replace(/'/g, '');
+              const esc = this.escapeHtml(seg);
+              return proseWords.has(lower) ? `<mark>${esc}</mark>` : esc;
+            }
+            return this.escapeHtml(seg);
+          });
+        },
+
+        escapeHtml(str) {
+          return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         },
 
         weatherIcon(condition) {
@@ -384,6 +483,9 @@
           this.error = null;
           this.currentIndex = 0;
           this.showCard = false;
+          this.showProse = false;
+          this.showScore = false;
+          this.showHighlights = false;
           try {
             const res = await fetch(`/api/quote?location=${encodeURIComponent(loc)}`);
             if (!res.ok) throw new Error((await res.text()) || `Error ${res.status}`);

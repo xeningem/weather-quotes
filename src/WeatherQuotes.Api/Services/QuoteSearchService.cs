@@ -3,7 +3,12 @@ using WeatherQuotes.Api.Models;
 
 namespace WeatherQuotes.Api.Services;
 
-public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingService)
+public interface IQuoteSearchService
+{
+    Task<IReadOnlyList<QuoteResult>> SearchAsync(string weatherDescription, double temperatureCelsius, string condition, int limit = 3);
+}
+
+public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingService) : IQuoteSearchService
 {
     public const string CollectionName = "literary_quotes";
 
@@ -22,7 +27,10 @@ public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingS
             Text: r.Payload["text"].StringValue,
             Book: r.Payload["book"].StringValue,
             Author: r.Payload["author"].StringValue,
-            Score: r.Score
+            Score: r.Score,
+            Era: r.Payload.TryGetValue("era", out var era) ? era.StringValue : null,
+            Genre: r.Payload.TryGetValue("genre", out var genre) ? genre.StringValue : null,
+            Language: r.Payload.TryGetValue("language", out var lang) ? lang.StringValue : null
         )).ToList();
 
         var filtered = all
@@ -35,7 +43,7 @@ public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingS
         return pool.OrderBy(_ => Random.Shared.Next()).Take(limit).ToList();
     }
 
-    private static bool IsTemperatureCompatible(string text, double temp)
+    internal static bool IsTemperatureCompatible(string text, double temp)
     {
         var lower = text.ToLowerInvariant();
         if (temp >= 18)
@@ -50,7 +58,7 @@ public class QuoteSearchService(QdrantClient qdrant, EmbeddingService embeddingS
         return true;
     }
 
-    private static bool IsConditionCompatible(string text, string condition)
+    internal static bool IsConditionCompatible(string text, string condition)
     {
         var lower = text.ToLowerInvariant();
         return condition switch

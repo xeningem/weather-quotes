@@ -12,6 +12,7 @@ public static class BookDownloader
         (107,   "Thomas Hardy",            "Far from the Madding Crowd"),
         (122,   "Thomas Hardy",            "The Return of the Native"),
         (110,   "Thomas Hardy",            "Tess of the d'Urbervilles"),
+        (1591,  "Thomas Hardy",            "Jude the Obscure"),
         (2701,  "Herman Melville",         "Moby-Dick"),
         (2554,  "Fyodor Dostoyevsky",      "Crime and Punishment"),
         (1399,  "Leo Tolstoy",             "Anna Karenina"),
@@ -24,7 +25,31 @@ public static class BookDownloader
         (161,   "Jane Austen",             "Sense and Sensibility"),
         (1342,  "Jane Austen",             "Pride and Prejudice"),
         (76,    "Mark Twain",              "Adventures of Huckleberry Finn"),
+        (1357,  "Joseph Conrad",           "Heart of Darkness"),
+        (42,    "Joseph Conrad",           "Lord Jim"),
+        (1919,  "Joseph Conrad",           "The Nigger of the Narcissus"),
+        (2814,  "Jack London",             "The Call of the Wild"),
+        (2262,  "Jack London",             "White Fang"),
+        (3407,  "Jack London",             "The Sea Wolf"),
+        (4667,  "Jack London",             "The People of the Abyss"),
+        (1798,  "Anton Chekhov",           "The Cherry Orchard"),
+        // Batch 2 — weather-rich additions
+        (1723,  "Joseph Conrad",           "Typhoon"),
+        (220,   "Joseph Conrad",           "The Secret Sharer"),
+        (143,   "Thomas Hardy",            "The Mayor of Casterbridge"),
+        (1582,  "Thomas Hardy",            "The Woodlanders"),
+        (3004,  "Jack London",             "Burning Daylight"),
+        (1056,  "Jack London",             "Martin Eden"),
+        (1756,  "Anton Chekhov",           "Uncle Vanya"),
+        (7986,  "Anton Chekhov",           "Three Sisters"),
+        (13415, "Anton Chekhov",           "The Lady with the Dog and Other Stories"),
+        (13416, "Anton Chekhov",           "The Darling and Other Stories"),
+        (145,   "George Eliot",            "Middlemarch"),
+        (6688,  "George Eliot",            "The Mill on the Floss"),
+        (217,   "D.H. Lawrence",           "Sons and Lovers"),
+        (4240,  "D.H. Lawrence",           "Women in Love"),
     ];
+
 
     public static async Task DownloadMissingAsync(string booksDirectory)
     {

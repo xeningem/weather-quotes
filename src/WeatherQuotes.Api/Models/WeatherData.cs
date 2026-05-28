@@ -78,5 +78,8 @@ public record QuoteResult(
     string Text,
     string Book,
     string Author,
-    double Score
+    double Score,
+    string? Era = null,
+    string? Genre = null,
+    string? Language = null
 );

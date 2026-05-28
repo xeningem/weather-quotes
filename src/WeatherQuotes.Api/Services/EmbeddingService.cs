@@ -1,12 +1,12 @@
-using Microsoft.SemanticKernel.Embeddings;
+using Microsoft.Extensions.AI;
 
 namespace WeatherQuotes.Api.Services;
 
-public class EmbeddingService(ITextEmbeddingGenerationService embeddings)
+public class EmbeddingService(IEmbeddingGenerator<string, Embedding<float>> embeddings)
 {
     public async Task<float[]> GetEmbeddingAsync(string text)
     {
-        var result = await embeddings.GenerateEmbeddingAsync(text);
-        return result.ToArray();
+        var results = await embeddings.GenerateAsync([text]);
+        return results[0].Vector.ToArray();
     }
 }

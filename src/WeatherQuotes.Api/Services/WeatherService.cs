@@ -3,7 +3,12 @@ using WeatherQuotes.Api.Models;
 
 namespace WeatherQuotes.Api.Services;
 
-public class WeatherService(HttpClient http)
+public interface IWeatherService
+{
+    Task<WeatherData> GetCurrentWeatherAsync(string location);
+}
+
+public class WeatherService(HttpClient http) : IWeatherService
 {
 
     public async Task<WeatherData> GetCurrentWeatherAsync(string location)
@@ -53,7 +58,7 @@ public class WeatherService(HttpClient http)
     }
 }
 
-internal static class WmoCode
+public static class WmoCode
 {
     public static (string condition, string description) Describe(int code) => code switch
     {

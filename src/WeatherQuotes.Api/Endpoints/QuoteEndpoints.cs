@@ -31,5 +31,21 @@ public static class QuoteEndpoints
             }
         })
         .WithName("GetQuote");
+
+        app.MapGet("/api/quote/prose", async (
+            string text,
+            IQuoteSearchService quoteSearchService) =>
+        {
+            if (string.IsNullOrWhiteSpace(text) || text.Trim().Length < 5)
+                return Results.BadRequest(new { error = "text is too short" });
+            if (text.Length > 1000)
+                return Results.BadRequest(new { error = "text is too long (max 1000 chars)" });
+
+            var prose = text.Trim();
+            // Temperature 12 and empty condition are neutral — no keyword filtering applied
+            var quotes = await quoteSearchService.SearchAsync(prose, 12.0, "");
+            return Results.Ok(new { weatherProse = prose, quotes });
+        })
+        .WithName("GetQuoteFromProse");
     }
 }

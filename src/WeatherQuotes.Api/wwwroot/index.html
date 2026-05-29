@@ -350,6 +350,59 @@
       font-style: italic;
     }
 
+    /* ── Demo row ── */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .demo-label {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.8rem;
+      color: #ccc;
+      white-space: nowrap;
+    }
+
+    /* ── About section ── */
+    .about-section {
+      margin-top: 3rem;
+      border-top: 1px solid #e8e2d8;
+      padding-top: 1rem;
+    }
+
+    .about-section summary {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.78rem;
+      color: #bbb;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+    }
+
+    .about-section summary::-webkit-details-marker { display: none; }
+    .about-section summary::before { content: '+ '; }
+    .about-section[open] summary::before { content: '− '; }
+
+    .about-content {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .about-content p {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 0.82rem;
+      color: #aaa;
+      line-height: 1.65;
+      border-left: 2px solid #e0d8cc;
+      padding-left: 1rem;
+    }
+
     /* ── Mobile ── */
     @media (max-width: 480px) {
       body { padding: 2rem 1rem 3.5rem; }
@@ -369,6 +422,13 @@
     <div class="mode-row">
       <button class="mode-btn" :class="{ active: !customMode }" @click="setMode(false)">By location</button>
       <button class="mode-btn" :class="{ active: customMode }" @click="setMode(true)">Custom weather</button>
+    </div>
+
+    <div class="demo-row" x-show="!result && !loading">
+      <span class="demo-label">Try:</span>
+      <template x-for="demo in demos" :key="demo.label">
+        <button class="day-btn" @click="runDemo(demo)" x-text="demo.label"></button>
+      </template>
     </div>
 
     <div class="custom-wrap" x-show="customMode">
@@ -477,6 +537,16 @@
         </div>
       </div>
     </template>
+
+    <details class="about-section">
+      <summary>How it works</summary>
+      <div class="about-content">
+        <p>You type a city name and the app fetches real current weather from Open-Meteo — temperature, condition, humidity. It converts those numbers into a short prose description: <em>"A grey autumn day in London. The rain is steady and cold at 8°C."</em></p>
+        <p>That prose is turned into a vector embedding using <strong>nomic-embed-text</strong> running locally via Ollama. An embedding is a list of 768 numbers that encodes the semantic meaning of the text — rainy days and foggy mornings land close together in this space.</p>
+        <p><strong>Qdrant</strong>, a vector database, holds ~27 000 weather-adjacent paragraphs extracted from 44 classic novels. It finds the paragraphs whose embeddings are geometrically closest to the weather query.</p>
+        <p>A small filter removes obvious mismatches — scorching-sun quotes on a cold day, blizzard quotes under clear skies — and the final quote is drawn from the survivors. <em>Custom weather</em> mode lets you skip the weather API and type any description directly, in English or Russian.</p>
+      </div>
+    </details>
   </div>
 
   <script>
@@ -498,6 +568,13 @@
         dayLabels: ['Today', 'Tomorrow', '+2 days', '+3 days'],
         customMode: false,
         customText: '',
+        demos: [
+          { label: 'London rain',   mode: 'location', value: 'London' },
+          { label: 'Moscow frost',  mode: 'location', value: 'Moscow' },
+          { label: 'Naples summer', mode: 'location', value: 'Naples' },
+          { label: 'Thunderstorm',  mode: 'custom',   value: 'A violent summer thunderstorm, lightning flashes across a dark sky, warm heavy rain, the air electric and alive.' },
+          { label: 'Зимний туман',  mode: 'custom',   value: 'Густой зимний туман, мороз, тишина. Всё скрыто в серой мгле, деревья стоят как призраки.' },
+        ],
 
         get currentQuote() {
           return this.result?.quotes[this.currentIndex] ?? null;
@@ -554,6 +631,18 @@
           }
           const w = this.result.weather;
           return `${this.weatherIcon(w.condition)} ${w.description} · ${Math.round(w.temperatureCelsius)}°C`;
+        },
+
+        runDemo(demo) {
+          if (demo.mode === 'custom') {
+            this.customMode = true;
+            this.customText = demo.value;
+            this.searchCustom();
+          } else {
+            this.customMode = false;
+            this.query = demo.value;
+            this.searchSelected();
+          }
         },
 
         setMode(custom) {

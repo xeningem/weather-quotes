@@ -53,3 +53,13 @@ _Goal: get a quote for weather that hasn't happened yet._
 - [x] Extend `WeatherService` to fetch a daily forecast (Open-Meteo `/forecast?daily=...`)
 - [x] Add a day selector to the UI (Today / Tomorrow / +2 days / +3 days pills)
 - [x] API endpoint: `GET /api/quote?location=...&offset=0..3`
+
+---
+
+## Phase 6 — Presentation & Description
+_Goal: make the project legible to someone who has never seen it — both on GitHub and as a live app._
+
+- [ ] Architecture diagram (Mermaid, embeds natively in GitHub README)
+- [ ] README — concept-first, screenshots, architecture, quick-start
+- [ ] About / How it works — collapsible section in the UI
+- [ ] Demo mode — example pills on the start screen (cities + custom weather prose)
